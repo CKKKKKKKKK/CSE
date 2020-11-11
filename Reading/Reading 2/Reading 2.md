@@ -73,9 +73,7 @@
 
 ### 5. Why is it important that at most one candidate win an election (the Election Safety Problem)?
 
-​		Because 
-
-
+​		Because if more than one candidates win an election, there will be more than one leaders at the same time, then the whole system cannot reach consensus.
 
 
 
@@ -92,6 +90,10 @@
 
 
 ### 8. How does Raft handle leader failures?
+
+​		If a leader crashes, then there will be election timeout for some followers and these followers will become candidates in a new term of election. The election will repeat until only one candidate win the election. And because of the Election Restriction, the new leader will have all the entries the old leader has committed and this ensure the atomicity of the whole system.
+
+
 
 ### 9. How does Raft handle network partitions?
 
