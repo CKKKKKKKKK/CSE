@@ -97,4 +97,16 @@
 
 ### 9. How does Raft handle network partitions?
 
+​		If the leader can still connect to a majority of the servers, then although the rest servers cannot hear the heartbeat of the leader and some of them become candidates, because the current leader still "govern" a majority of the servers, none of the candidates can receive votes from a majority of servers to become a leader. So the election started by these "minority" servers will go on infinitely until the candidates connect to the current leader again and because it can receive the heartbeat of the leader before the election timeout elapses, it will step down to become a follower again.
+
+​		If the leader cannot connect to a majority of the servers, then it cannot commit any updates requested by the client because it cannot replicate the log entries on a majority of the servers. At the same time, those servers which cannot hear the heartbeats from the leader and some of them whose election timeouts elapse, they will become candidates. If a candidate can receive votes from a majority of the servers, then it will become the new leader and any request from the client sent to it can be committed because it can replicate log entries on a majority of servers. And when the network partition heal, the old leader can connect to the new leader, the old leader will observe a larger term number and step down to become a follower of the new leader. On the other hand, if none of the candidates can receive majority votes, then their election will go on and the whole system is not available until the current leader can connect to a majority of the servers or one of the candidate can receive majority votes.
+
+
+
 ### 10. At the top of 5.3, the paper says that leaders will retry AppendEntries RPCs indefinitely. Why don't they abort after a timeout?
+
+​		If the leader can't receive reponse to its AppendEntries RPCs from some followers and there is a timeout, there are two cases:
+
+​		First, if the leader has already replicated the entries on a majority of the servers, it will reply committed to the client, so it is impossible for the leader to abort the committed entries.
+
+​		Second, if the leader has not yet replicated the entries on a majority of the servers, then it just retry AppendEntries RPCs after a timeout because it can see that nextIndexes of those servers are smaller than the last log index. As for why not the leader abort the entries, if these servers are just slow followers, just after the leader decides to abort the slow followers reply to the previous AppendEntries RPCs and now there are a majority of the servers reply to the previous AppendEntries RPCs, what should the leader do? Choose to reply committed to the client? But it has already decided to abort and notified other servers through RPCs. Choose to abort? What if the slow followers reply the abort RPCs after timeout again? Abort the abort? So abort may incur complication and affect consensus, and the better choice is to retry AppendEntries RPCs indefinitely.
