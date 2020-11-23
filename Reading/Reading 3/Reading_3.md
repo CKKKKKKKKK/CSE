@@ -16,7 +16,7 @@
 
 - Delivery guarantees: a data communication network is not able to know whether or not the application acted on the message delivered, so it should be the application instead of the data communication network that sends an acknowledgement to the sender application.
 - Secure transmission of data: there is no need for the communication subsystem to provide for automatic encryption of all traffic because many applications have to obtain required authentication check and handle key management to its satisfaction.
-- Duplicate message suppression: some duplicate requests may be originated by application because of its own failure/retry procedures, and low-level network cannot distinguish these duplicate requests, so it should be applications' job to detect its own duplicates.
+- Duplicate message suppression: some duplicate requests may be originated by application because of its own failure/retry procedures, and low-level network cannot distinguish these duplicate requests, so it should be applications' job to detect their own duplicates.
 
 
 
@@ -30,10 +30,10 @@
 
 ### 4. Consider the design of the file system based on inode (as we learn from class and the lab ). Which part(s) of the design do you think can be removed? In another word, which part(s) of the design is(are) not flexible enough and should be implemented by the user?
 
-​	I think from file layer and above should be implemented by user. Because file system's design of inode constricts what is the file's max size and which type of attributes of the file can be recorded, which is very inflexible and maybe it goes beyond the core function of file system. So the management of inode should be done by user.
+​	I think file layer and above should be implemented by user. Because file system's design of inode constricts file's max size, the max number of files and which type of attributes of the file can be recorded, which is very inflexible and maybe go beyond the core function of file system. So the management of inode should be done by user.
 
 ​	
 
 ### 5. The same question, for the OS.
 
-​	I think most functions of the OS should be implemented by the user. If an application wants to use the functions provided by the OS, there must be a context switch to the kernel mode, which is very costly and inflexible. Now there are micro-kernel OS, whose memory only implements minimal abstraction, and most of its functions are implemented as different modules and run in user mode, which is very flexible, scalable and fault  tolerant because if there are some mistakes in some module, the mistakes will only be restricted in that module and will not affect other module.
+​	I think most functions of the OS should be implemented by the user. If an application wants to use the functions provided by the OS, there must be a context switch to the kernel mode, which is very costly and inflexible. Now there is micro-kernel OS, whose memory only implements minimal abstraction, and most of its functions are implemented as different modules and run in user mode, which is very flexible, scalable and fault  tolerant because if there are some mistakes in some module, the mistakes will only be restricted in that module and will not affect other modules.
